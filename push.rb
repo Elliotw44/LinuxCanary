@@ -43,6 +43,16 @@ gpucount = parsed["GPUS"]
 gpucount = gpucount[0]
 gpucount = gpucount["Count"]
 
+gpus = Array.new(gpucount)
+gpucount.times do |num|   
+   s = TCPSocket.new '192.168.1.100', 4028
+   s.puts '{"command":"gpu|' + num.to_so + '" }'
+   gpu_query = s.gets.strip!
+   gpus[num] = gpu_query
+end
+
+
+
 pools_query.strip!
 parsed = JSON.parse(pools_query)
 pool = parsed["POOLS"]
