@@ -29,7 +29,7 @@ if(user != nil || worker != nil)
 		worker_user_name = "#{user}:#{worker}"
 
     	#Getting General Information about Miner
-		s = TCPSocket.new '192.168.1.100', 4028
+		s = TCPSocket.new '127.0.0.1', 4028
 		s.puts '{"command":"summary"}'
 		summary_query = s.gets
 		summary_query.strip! 
@@ -41,7 +41,7 @@ if(user != nil || worker != nil)
 		hw_errors = summary["Hardware Errors"]
 
     	#Getting GPU information(Speed and Tempature)
-		s = TCPSocket.new '192.168.1.100', 4028
+		s = TCPSocket.new '127.0.0.1', 4028
 		s.puts '{"command":"gpucount"}'
 		gpucount_query = s.gets
 		gpucount_query.strip!
@@ -51,7 +51,7 @@ if(user != nil || worker != nil)
 		gpucount = gpucount["Count"]
 		gpus = Array.new(gpucount * 2)
 		gpucount.times do |num|   
-   			s = TCPSocket.new '192.168.1.100', 4028
+   			s = TCPSocket.new '127.0.0.1', 4028
    			s.puts '{"command":"gpu|' + num.to_so + '" }'
    			gpu_query = s.gets.strip!
    			gpu_parsed = JSON.parse(gpu_query)
@@ -63,7 +63,7 @@ if(user != nil || worker != nil)
     	#Creating and sending JSON 
 		updateinfo = { wun: worker_user_name, a: accepted, r: rejected, he: hw_errors, gs: gpus }
 		path = "/workers/update"
-		host = "https://miningmonitor.herokuapp.com"
+		host = "https://cryptocanary.herokuapp.com"
 		puts RestClient.put "#{host}#{path}", updateinfo, {:content_type => :json} 
 	end
 else
